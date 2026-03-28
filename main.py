@@ -1,10 +1,9 @@
 
 from classes import ISAM
 
-# --- EXECUÇÃO DA SIMULAÇÃO EXPERIMENTAL 
 meu_isam = ISAM()
 
-# Inserções Obrigatórias 
+# Inserções 
 insercoes = [
     (18, "R18"), (22, "R22"), (27, "R27"), (35, "R35"), (41, "R41"),
     (44, "R44"), (63, "R63"), (67, "R67"), (83, "R83"), (86, "R86"),
@@ -13,8 +12,9 @@ insercoes = [
 for c, d in insercoes:
     meu_isam.inserir(c, d)
 
-# Remoções Obrigatórias 
-for c in [27, 44, 67, 83, 145]:
+# Remoções 
+remocoes = [27, 44, 67, 83, 145]
+for c in remocoes:
     meu_isam.remover(c)
 
 # Buscas de Exemplo

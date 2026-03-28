@@ -16,7 +16,7 @@ class Pagina:
 
 class ISAM:
     def __init__(self):
-        # 1. Configuração da Estrutura Inicial Estática 
+        # Configuração da Estrutura Inicial Estática 
         # Nível Folha (Dicionário para acesso rápido via ponteiro simbólico)
         self.folhas = {
             'A': Pagina(), 'B': Pagina(), 'C': Pagina(),
@@ -31,7 +31,7 @@ class ISAM:
         self._carregar_inicial('E', [51, 55])
         self._carregar_inicial('F', [63, 97])
 
-        # Métricas [cite: 69]
+        # Métricas 
         self.total_removidos = 0
 
     def _carregar_inicial(self, id_folha, chaves):
@@ -39,7 +39,6 @@ class ISAM:
             self.folhas[id_folha].registros.append(Registro(c, f"R{c}"))
 
     def navegar_indice(self, chave):
-        """Simula o percurso nos níveis intermediários fixos[cite: 21, 23]."""
         custo = 1 # Raiz
         # Nível Raiz (Chave 40)
         if chave < 40:
@@ -62,7 +61,6 @@ class ISAM:
                 return 'F', custo + 1 # Aponta para Folha F
 
     def inserir(self, chave, dado):
-        """Insere respeitando o limite e criando overflow se necessário[cite: 28, 31]."""
         id_folha, _ = self.navegar_indice(chave)
         pagina_atual = self.folhas[id_folha]
         
@@ -73,12 +71,11 @@ class ISAM:
                 pagina_atual.registros.sort(key=lambda x: x.chave)
                 return
             if pagina_atual.proxima_overflow is None:
-                # Cria nova página de overflow [cite: 31]
+                # Cria nova página de overflow 
                 pagina_atual.proxima_overflow = Pagina(eh_overflow=True)
             pagina_atual = pagina_atual.proxima_overflow
 
     def buscar_igualdade(self, chave):
-        """Busca chave e retorna (registro, custo)[cite: 48, 67]."""
         id_folha, custo_base = self.navegar_indice(chave)
         pagina_atual = self.folhas[id_folha]
         custo_paginas = 0
@@ -92,7 +89,6 @@ class ISAM:
         return None, custo_base + custo_paginas
 
     def remover(self, chave):
-        """Remove o registro e libera páginas de overflow vazias[cite: 28, 44]."""
         id_folha, _ = self.navegar_indice(chave)
         anterior = None
         atual = self.folhas[id_folha]
@@ -102,7 +98,7 @@ class ISAM:
                 if reg.chave == chave:
                     atual.registros.pop(i)
                     self.total_removidos += 1
-                    # Se overflow ficar vazio, desconecta [cite: 28]
+                    # Se overflow ficar vazio, desconecta
                     if atual.eh_overflow and not atual.registros:
                         anterior.proxima_overflow = atual.proxima_overflow
                     return True
@@ -111,7 +107,6 @@ class ISAM:
         return False
 
     def buscar_intervalo(self, inicio, fim):
-        """Busca registros entre um intervalo[cite: 16, 60]."""
         resultados = []
         custo_total = 0
         # Percorre todas as folhas para garantir o intervalo (simplificação do ISAM)
@@ -128,7 +123,6 @@ class ISAM:
         return resultados, custo_total
 
     def exibir_metricas(self):
-        """Gera os dados para o relatório final[cite: 68, 69]."""
         overflows = 0
         total_cadeia = 0
         for folha in self.folhas.values():
