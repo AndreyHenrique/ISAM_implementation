@@ -86,7 +86,7 @@ class ISAM:
                 if reg.chave == chave:
                     return reg, custo_base + custo_paginas
             pagina_atual = pagina_atual.proxima_overflow
-        return None, custo_base + custo_paginas
+        return None, custo_base + custo_paginas - 1
 
     def remover(self, chave):
         id_folha, _ = self.navegar_indice(chave)
@@ -106,21 +106,32 @@ class ISAM:
             atual = atual.proxima_overflow
         return False
 
+
     def buscar_intervalo(self, inicio, fim):
         resultados = []
         custo_total = 0
-        # Percorre todas as folhas para garantir o intervalo (simplificação do ISAM)
-        for id_folha in ['A', 'B', 'C', 'D', 'E', 'F']:
-            _, custo_idx = self.navegar_indice(0) # Simula custo de chegar na folha
-            custo_total += custo_idx
-            atual = self.folhas[id_folha]
-            while atual:
-                custo_total += 1
-                for reg in atual.registros:
-                    if inicio <= reg.chave <= fim:
-                        resultados.append(reg)
-                atual = atual.proxima_overflow
-        return resultados, custo_total
+        mapeamento = [
+            (0, 19, 'A'), (20, 32, 'B'), (33, 39, 'C'),
+            (40, 50, 'D'), (51, 62, 'E'), (63, 999, 'F')
+        ]
+
+        for min_chave, max_chave, id_folha in mapeamento:
+            # Só entra na folha se o intervalo de busca intersectar o intervalo da folha
+            if not (fim < min_chave or inicio > max_chave):
+                # Soma o custo do índice para chegar nesta folha específica
+                _, custo_idx = self.navegar_indice(min_chave) 
+                custo_total += custo_idx
+                
+                # Percorre a primária e seus overflows
+                atual = self.folhas[id_folha]
+                while atual:
+                    custo_total += 1 # Custo de acessar a página (primária ou overflow)
+                    for reg in atual.registros:
+                        if inicio <= reg.chave <= fim:
+                            resultados.append(reg)
+                    atual = atual.proxima_overflow
+                    
+        return resultados, custo_total - 1
 
     def exibir_metricas(self):
         overflows = 0
@@ -138,3 +149,4 @@ class ISAM:
         print(f"Registros Removidos: {self.total_removidos}")
         if overflows > 0:
             print(f"Tamanho Médio das Cadeias de Overflow: {total_cadeia/len(self.folhas):.2f}")
+

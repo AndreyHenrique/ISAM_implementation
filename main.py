@@ -21,7 +21,16 @@ for c in remocoes:
 res, custo = meu_isam.buscar_igualdade(35)
 print(f"Busca(35): {res}, Custo: {custo} nós")
 
+res, custo = meu_isam.buscar_igualdade(90)
+print(f"Busca(90): {res}, Custo: {custo} nós")
+
 res_int, custo_int = meu_isam.buscar_intervalo(20, 50)
 print(f"Busca Intervalo(20, 50): {len(res_int)} registros encontrados, Custo: {custo_int} nós")
+
+res_int, custo_int = meu_isam.buscar_intervalo(60, 90)
+print(f"Busca Intervalo(60, 90): {len(res_int)} registros encontrados, Custo: {custo_int} nós")
+
+res_int, custo_int = meu_isam.buscar_intervalo(120, 150)
+print(f"Busca Intervalo(120, 150): {len(res_int)} registros encontrados, Custo: {custo_int} nós")
 
 meu_isam.exibir_metricas()
