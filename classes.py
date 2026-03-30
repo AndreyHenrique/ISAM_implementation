@@ -131,7 +131,7 @@ class ISAM:
                             resultados.append(reg)
                     atual = atual.proxima_overflow
                     
-        return resultados, custo_total - 1
+        return resultados, custo_total 
 
     def exibir_metricas(self):
         overflows = 0
